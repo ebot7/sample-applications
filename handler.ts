@@ -1,6 +1,6 @@
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
 
-export const integrationNodes: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
+export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
   const definitions = [];
   
   definitions.push({
@@ -67,4 +67,42 @@ export const integrationNodes: Handler = (event: APIGatewayEvent, context: Conte
   };
 
   cb(null, response);
+}
+
+export const integrationNodesExecution: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
+  const nodeInput = JSON.parse(event.body);
+  const integrationNodeId = event.pathParameters.id;
+
+  switch (integrationNodeId) {
+    case 'helloWorld':
+      cb(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          isSuccess: true,
+          result: {
+            resultType: 'greeting',
+            data: `Hello ${nodeInput.parameters.name ? nodeInput.parameters.name : 'World'}`,
+          },
+        })
+      });
+      break;
+
+    case 'sum':
+      cb(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          isSuccess: true,
+          result: {
+            resultType: 'sum',
+            data: nodeInput.parameters.a + nodeInput.parameters.b,
+          },
+        })
+      });
+      break;
+  }
+
+  cb(null, {
+    statusCode: 404,
+    body: `"${integrationNodeId}" is an unknown integration node id.`
+  })
 }

@@ -11,9 +11,15 @@ provider:
   runtime: nodejs14.x
 
 functions:
-  integration-nodes:
-    handler: handler.integrationNodes
+  integrationNodesDefinition:
+    handler: handler.integrationNodesDefinition
     events:
       - http:
           method: get
           path: integration-nodes
+  integrationNodesExecution:
+    handler: handler.integrationNodesExecution
+    events:
+      - http:
+          method: post
+          path: integration-nodes/{id}
