@@ -23,9 +23,13 @@ jobs:
 
       - name: install modules
         run: yarn
-      - name: Deploy to AWS lambda
-        run: yarn deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
+      - name: Deploy prod stage
+        id: deploy
+        uses: ebot7/eb7-sls-helper@master
+        with:
+          changes: ${{ steps.get_file_changes.outputs.files }}
+          profile: "prod"
+          stage: "prod"
+          aws_key : ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret :  ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          mode: "deploy"
