@@ -22,9 +22,12 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
       greeting: {
         label: 'Greeting',
         description: 'A greeting.',
-        schema: {
-          type: 'string',
-        },
+        type: 'object',
+        properties: {
+          greeting: {
+            type: 'string',
+          },
+        }
       },
     },
   });
@@ -54,8 +57,9 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
       sum: {
         label: 'Sum',
         description: 'The sum of the two inputs',
-        schema: {
-          type: 'number',
+        type: 'object',
+        properties: {
+          sum: { type: 'number' }
         },
       },
     },
@@ -81,7 +85,9 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
           isSuccess: true,
           result: {
             resultType: 'greeting',
-            data: `Hello ${nodeInput.parameters.name ? nodeInput.parameters.name : 'World'}`,
+            data: {
+              greeting: `Hello ${nodeInput.parameters.name ? nodeInput.parameters.name : 'World'}`
+            }
           },
         })
       });
@@ -94,7 +100,9 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
           isSuccess: true,
           result: {
             resultType: 'sum',
-            data: nodeInput.parameters.a + nodeInput.parameters.b,
+            data: {
+              sum: nodeInput.parameters.a + nodeInput.parameters.b
+            }
           },
         })
       });
