@@ -15,7 +15,7 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
         label: 'Name',
         description: 'The name of the person to greet.',
         type: 'string',
-        required: false,
+        required: true,
       },
     },
     results: {
@@ -86,7 +86,7 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
           result: {
             resultType: 'greeting',
             data: {
-              greeting: `Hello ${nodeInput.parameters.name ? nodeInput.parameters.name : 'World'}`
+              greeting: `Hello ${nodeInput.parameters.name}`
             }
           },
         })
