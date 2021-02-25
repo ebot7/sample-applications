@@ -12,7 +12,7 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     version: '1.0.0',
     parameters: {
       name: {
-        label: 'Name',
+        title: 'Name',
         description: 'The name of the person to greet.',
         type: 'string',
         required: true,
@@ -20,7 +20,7 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
     results: {
       greeting: {
-        label: 'Greeting',
+        title: 'Greeting',
         description: 'A greeting.',
         type: 'object',
         properties: {
@@ -41,13 +41,13 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     version: '1.0.0',
     parameters: {
       a: {
-        label: 'A',
+        title: 'A',
         description: 'The first number.',
         type: 'number',
         required: true,
       },
       b: {
-        label: 'B',
+        title: 'B',
         description: 'The second number.',
         type: 'number',
         required: true,
@@ -55,7 +55,7 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
     results: {
       sum: {
-        label: 'Sum',
+        title: 'Sum',
         description: 'The sum of the two inputs',
         type: 'object',
         properties: {
