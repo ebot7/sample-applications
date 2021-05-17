@@ -65,6 +65,45 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
   });
 
+  definitions.push({
+    id: 'concat',
+    meta: {
+      label: 'Concat',
+      description: 'Returns one string consisting of all inputs concatenated.',
+    },
+    version: '1.0.0',
+    parameters: {
+      one: {
+        title: 'One',
+        description: 'The first parameter.',
+        type: 'string',
+        required: true,
+      },
+      two: {
+        title: 'Two',
+        description: 'The second parameter.',
+        type: 'string',
+        required: true,
+      },
+      three: {
+        title: 'Three',
+        description: 'The third parameter.',
+        type: 'string',
+        required: true,
+      },
+    },
+    results: {
+      concat: {
+        title: 'Success',
+        description: 'The concatenation of all inputs',
+        type: 'object',
+        properties: {
+          concatenation: { type: 'string' }
+        },
+      },
+    },
+  });
+
   const response = {
     statusCode: 200,
     body: JSON.stringify(definitions),
@@ -102,6 +141,21 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
             resultType: 'sum',
             data: {
               sum: nodeInput.parameters.a + nodeInput.parameters.b
+            }
+          },
+        })
+      });
+      break;
+
+    case 'concat':
+      cb(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          isSuccess: true,
+          result: {
+            resultType: 'concat',
+            data: {
+              concatenation: Object.values(nodeInput.parameters).join('-')
             }
           },
         })
