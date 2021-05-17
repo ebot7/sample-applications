@@ -161,10 +161,11 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
         })
       });
       break;
-  }
 
-  cb(null, {
-    statusCode: 404,
-    body: `"${integrationNodeId}" is an unknown integration node id.`
-  })
+    default:
+      cb(null, {
+        statusCode: 404,
+        body: `"${integrationNodeId}" is an unknown integration node id.`
+      });
+  }
 }
