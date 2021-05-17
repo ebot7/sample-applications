@@ -23,13 +23,11 @@ jobs:
 
       - name: install modules
         run: yarn
+      - name: Install Serverless Framework
+        run: sudo npm install -g serverless
+      - name: Check that Serverless was installed correctly
+        run: sls --version
+      - name: Configure credentials
+        run: sls config credentials --provider aws --key ${{ secrets.AWS_PX_KEY }} --secret ${{ secrets.AWS_PX_SECRET }} --profile prod
       - name: Deploy prod stage
-        id: deploy
-        uses: ebot7/eb7-sls-helper@master
-        with:
-          changes: ${{ steps.get_file_changes.outputs.files }}
-          profile: "prod"
-          stage: "prod"
-          aws_key : ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret :  ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          mode: "deploy"
+        run: sls deploy --profile prod --stage prod
