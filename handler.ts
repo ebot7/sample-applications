@@ -103,6 +103,39 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
       },
     },
   });
+  
+  definitions.push({
+    id: 'error',
+    meta: {
+      label: 'Error Thrower',
+      description: 'Returns an error code of your choosing. Used to test how AP and CE handle errors',
+    },
+    version: '1.0.0',
+    parameters: {
+      errorCode: {
+        title: 'Error code',
+        description: "The error code, e.g., 404, 500. I don't know what will happen if you make this 200.",
+        type: 'number',
+        required: true,
+      },
+      message: {
+        title: 'Message',
+        description: 'The message that will be returned with your error.',
+        type: 'string',
+        required: true,
+      },
+    },
+    results: {
+      meaning: {
+        title: "The answer to all of life's biggest mysteries",
+        description: 'This result will technically never be seen since this node always throws an error.',
+        type: 'object',
+        properties: {
+          meaning: { type: 'string' }
+        },
+      },
+    },
+  })
 
   const response = {
     statusCode: 200,
@@ -162,6 +195,26 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
       });
       break;
 
+    case 'error':
+      /**
+       * Taken from here:
+       * https://docs.aws.amazon.com/apigateway/latest/developerguide/handle-errors-in-lambda-integration.html
+       */
+       const error = {
+          errorType : "IntentionalError",
+          name: "IntegrationNodeError",
+          message: nodeInput.parameters.message,
+          httpStatus : nodeInput.parameters.errorCode,
+          requestId : context.awsRequestId,
+          trace : {
+              "function": "integrationNodesExecution()",
+              "line": 213,
+              "file": "handler.ts"
+          }
+        }
+        cb(error)
+        break;
+      
     default:
       cb(null, {
         statusCode: 404,
