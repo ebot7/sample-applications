@@ -196,24 +196,15 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
       break;
 
     case 'error':
-      /**
-       * Taken from here:
-       * https://docs.aws.amazon.com/apigateway/latest/developerguide/handle-errors-in-lambda-integration.html
-       */
-       const error = {
-          errorType : "IntentionalError",
-          name: "IntegrationNodeError",
-          message: nodeInput.parameters.message,
-          httpStatus : nodeInput.parameters.errorCode,
-          requestId : context.awsRequestId,
-          trace : {
-              "function": "integrationNodesExecution()",
-              "line": 213,
-              "file": "handler.ts"
-          }
+      const error = {
+        "isSuccess": false,
+        "error": {
+          "status": nodeInput.parameters.errorCode,
+          "message": nodeInput.parameters.statusCode
         }
-        cb(error)
-        break;
+      }
+      cb(null, error)
+      break;
       
     default:
       cb(null, {
