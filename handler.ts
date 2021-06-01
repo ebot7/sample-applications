@@ -196,13 +196,13 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
       break;
 
     case 'error':
-      const error = {
+      const error = JSON.stringify({
         "isSuccess": false,
         "error": {
           "status": nodeInput.parameters.errorCode,
           "message": nodeInput.parameters.statusCode
         }
-      }
+      })
       cb(null, error)
       break;
       
