@@ -21,6 +21,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: enter integration nodes folder
+        run: cd integration-nodes
       - name: install modules
         run: yarn
       - name: Install Serverless Framework
