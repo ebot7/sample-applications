@@ -1,6 +1,5 @@
 service: ebot7-example-application
 
-# These plugins are 
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
