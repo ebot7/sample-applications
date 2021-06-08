@@ -8,7 +8,7 @@
     "deploy": "serverless deploy"
   },
   "devDependencies": {
-    "@types/aws-lambda": "0.0.22",
+    "@types/aws-lambda": "8.10.77",
     "@types/node": "^8.0.57",
     "serverless": "^2.25.1",
     "serverless-offline": "^7.0.0",
