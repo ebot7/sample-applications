@@ -1,11 +1,13 @@
 service: ebot7-example-application
 
-# Add the serverless-webpack plugin
+# These plugins are 
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
 
 provider:
+  # e-bot7 Applications work with any framework and cloud provider
+  # These examples use Serverless, Node, and AWS Lambdas
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: "20201221"
@@ -14,12 +16,16 @@ provider:
   stage: ${opt:stage, 'dev'}
   profile: ${opt:profile, 'prod'}
 functions:
+  # Both of these functions use the same path (/integration-nodes)
+  # The GET operation returns definitions of any number of integration nodes.
   integrationNodesDefinition:
     handler: handler.integrationNodesDefinition
     events:
       - http:
           method: get
           path: integration-nodes
+  # Posting to /integration-nodes executes an integration node
+  # Multiple integration nodes can exist on a single path, so an {id} is required in the path parameters.
   integrationNodesExecution:
     handler: handler.integrationNodesExecution
     events:

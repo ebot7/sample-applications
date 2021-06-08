@@ -1,8 +1,14 @@
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
 
+// Definitions handler function.
+// Returns an array of objects matching the e-bot7 Application JSON schema.
+// The contents of each function determines what inputs each integration node expects
+// and what properties the results have.
 export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
   const definitions = [];
   
+  // This integration node receives a parameter called name.
+  // It returns an object with a greeting property.
   definitions.push({
     id: 'helloWorld',
     meta: {
@@ -144,7 +150,9 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
 
   cb(null, response);
 }
-
+// Execution handler function.
+// Receives an input as defined in the definitions handler.
+// Returns a result as defined in the definitions handler.
 export const integrationNodesExecution: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
   const nodeInput = JSON.parse(event.body);
   const integrationNodeId = event.pathParameters.id;
@@ -208,7 +216,6 @@ export const integrationNodesExecution: Handler = (event: APIGatewayEvent, conte
       }
       cb(null, error)
       break;
-      
     default:
       cb(null, {
         statusCode: 404,
