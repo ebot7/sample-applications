@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - feature/AP-355_sample-integration-nodes
 jobs:
   deploy:
     runs-on: ubuntu-latest
