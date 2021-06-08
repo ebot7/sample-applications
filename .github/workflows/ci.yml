@@ -33,3 +33,5 @@ jobs:
         run: sls config credentials --provider aws --key ${{ secrets.AWS_PX_KEY }} --secret ${{ secrets.AWS_PX_SECRET }} --profile prod
       - name: Deploy prod stage
         run: sls deploy --profile prod --stage prod
+      - name: enter root folder
+        run: cd ..
