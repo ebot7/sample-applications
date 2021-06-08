@@ -1,4 +1,4 @@
-service: ebot7-example-application
+service: ebot7-sample-integration-nodes
 
 plugins:
   - serverless-plugin-typescript
