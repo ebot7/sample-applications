@@ -24,7 +24,7 @@ provider:
       Action:
         - secretsmanager:GetSecretValue
       Resource:
-        - arn:aws:secretsmanager:eu-central-1:${self:provider.accountId}:secret:${self:provider.stage}/SAMPLE_APPLICATION/CREDENTIALS-*
+        - arn:aws:secretsmanager:eu-central-1:${self:provider.accountId}:secret:${self:provider.stage}/SAMPLE_APPLICATION/CREDENTIALS*
 functions:
   # This sample event handler receives an event when conversations are archived.
   # It fetches a list of messages from the conversation and prints them
