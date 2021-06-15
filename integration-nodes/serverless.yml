@@ -14,6 +14,7 @@ provider:
     shouldStartNameWithService: true
   stage: ${opt:stage, 'dev'}
   profile: ${opt:profile, 'prod'}
+  region: eu-central-1
 functions:
   # Both of these functions use the same path (/integration-nodes)
   # The GET operation returns definitions of any number of integration nodes.

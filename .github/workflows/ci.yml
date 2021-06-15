@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - feature/AP-356_sample-event-handlers
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -32,7 +33,7 @@ jobs:
         run: > 
           for directory in */; do cd $directory;
             if test -f serverless.yml;
-              then echo deploying $directory; yarn install; sls deploy --profile prod --stage prod;
+              then echo deploying $directory; yarn install; sls deploy --profile prod --stage dev;
             fi;
             cd ..;
           done
