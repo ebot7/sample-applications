@@ -16,6 +16,7 @@ provider:
   profile: ${opt:profile, 'prod'}
   region: eu-central-1
   accountId: 060817847094
+  endpointType: REGIONAL
   # This sample application is using AWS Secrets Manager to store its access token.
   # You can use the secure storage mechanism of your choice.
   iamRoleStatements:
