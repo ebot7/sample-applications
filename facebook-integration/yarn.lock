@@ -10,6 +10,20 @@
     d "1"
     es5-ext "^0.10.47"
 
+"@bitauth/libauth@^1.17.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@bitauth/libauth/-/libauth-1.18.1.tgz#b1c632ed85f73c16a0ff89d81e8a92809fa15108"
+  integrity sha512-s7evdGbdGAnGkv7xt6mCbcWTTNvburc1Z9EX/8JKwcRLqofjDs7VAEz+RP3a8OGEo4MWFV6Ydqu/BeJjIA7Kdg==
+
+"@ebot7/sdk@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@ebot7/sdk/-/sdk-0.1.0.tgz#3f7e97a7e3481843037752bb7b59b770e20d0917"
+  integrity sha512-sObbQnqtHcVy21f9FgBEH6/M7nTWAALqGN7KmPXR9RXlBmtLB1X55WgSHfgVy1zeU4bsp5G8YKMpgqRrNv+M9Q==
+  dependencies:
+    "@bitauth/libauth" "^1.17.1"
+    "@types/node" "^14.14.41"
+    axios "^0.21.1"
+
 "@hapi/accept@^3.2.4":
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-3.2.4.tgz#687510529493fe1d7d47954c31aff360d9364bd1"
@@ -757,6 +771,11 @@
   version "15.12.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.4.tgz#e1cf817d70a1e118e81922c4ff6683ce9d422e26"
   integrity sha512-zrNj1+yqYF4WskCMOHwN+w9iuD12+dGm0rQ35HLl9/Ouuq52cEtd0CH9qMgrdNmi5ejC1/V7vKEXYubB+65DkA==
+
+"@types/node@^14.14.41":
+  version "14.17.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.3.tgz#6d327abaa4be34a74e421ed6409a0ae2f47f4c3d"
+  integrity sha512-e6ZowgGJmTuXa3GyaPbTGxX17tnThl2aSSizrFthQ7m9uLGZBXiGhgE55cjRZTF5kjZvYn9EOPOMljdjwbflxw==
 
 "@types/node@^8.0.57":
   version "8.10.66"
