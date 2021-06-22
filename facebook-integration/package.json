@@ -1,12 +1,13 @@
 {
-  "name": "example-application",
+  "name": "facebook-integration",
   "version": "1.0.0",
-  "description": "Example application for the e-bot7 app platform",
+  "description": "Quick intro to facebook authentication workflow for ebot7 Application Platform with follow-along example.",
   "main": "handler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "serverless deploy",
-    "offline": "serverless offline"
+    "offline": "serverless offline",
+    "remove": "serverless remove -v"
   },
   "devDependencies": {
     "@types/aws-lambda": "0.0.22",
