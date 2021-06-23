@@ -5,10 +5,14 @@ import { SecretsManagerClient, GetSecretValueCommand, SecretsManager } from "@aw
 // Event handler function.
 // Prints an array of e-bot7 message objects from a single conversation.
 export const createTranscript: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
-  const { data: { botId, convId } } = JSON.parse(event.body)
-  const messages = await getMessages({ botId, convId })
-  processTranscript({ messages, botId, convId })
-  cb(null, { statusCode: 200, body: "successfully created transcript" })
+  const { data: { botId, convId }, eventName } = JSON.parse(event.body)
+  if (eventName === "conversation:archived") {
+    const messages = await getMessages({ botId, convId })
+    processTranscript({ messages, botId, convId })
+    cb(null, { statusCode: 200, body: "successfully created transcript" })
+  } else {
+    cb(null, { statusCode: 200, body: `Received unknown event type: "${eventName}". Expecting to receive "conversation:archived"` })
+  }
 }
 
 async function getMessages({ botId, convId }) {
