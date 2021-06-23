@@ -1,0 +1,33 @@
+service: ebot7-sample-channel-integration
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  # e-bot7 Applications work with any framework and cloud provider
+  # These examples use Serverless, Node, and AWS Lambdas
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: "20201221"
+  apiGateway:
+    shouldStartNameWithService: true
+  stage: ${opt:stage, 'dev'}
+  profile: ${opt:profile, 'prod'}
+functions:
+  # This function is invoked by the external platform.
+  # It causes a message to be sent to e-bot7
+  receiveInboundMessage:
+    handler: functions.inbound.handler
+    events:
+      - http:
+          method: post
+          path: receive-inbound
+  # This function is invoked by Application Platform.
+  # It causes a message to be sent to the external platform.
+  sendOutboundMessage:
+    handler: functions.outbound.handler
+    events:
+      - http:
+          method: post
+          path: send-outbound
