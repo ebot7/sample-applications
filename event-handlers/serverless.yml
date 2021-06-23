@@ -15,7 +15,6 @@ provider:
   stage: ${opt:stage, 'dev'}
   profile: ${opt:profile, 'prod'}
   region: eu-central-1
-  accountId: 060817847094
   endpointType: REGIONAL
   # This sample application is using AWS Secrets Manager to store its access token.
   # You can use the secure storage mechanism of your choice.
@@ -24,7 +23,7 @@ provider:
       Action:
         - secretsmanager:GetSecretValue
       Resource:
-        - arn:aws:secretsmanager:eu-central-1:${self:provider.accountId}:secret:${self:provider.stage}/SAMPLE_APPLICATION/CREDENTIALS-*
+        - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
 functions:
   # This sample event handler receives an event when conversations are archived.
   # It fetches a list of messages from the conversation and prints them
@@ -35,4 +34,4 @@ functions:
           method: post
           path: transcript
     environment:
-      token: ${self:provider.stage}/SAMPLE_APPLICATION/CREDENTIALS
+      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS

@@ -24,7 +24,7 @@ async function getMessagesClient() {
 }
 
 async function getEb7Client() {
-  const bearerToken = await getSecretFromSecretsManager(process.env.token)
+  const { ACCESS_TOKEN: bearerToken } = await getSecretFromSecretsManager(process.env.token)
   return new Ebot7Client({
     bearerToken,
     baseURL: 'https://api.production.e-bot7.de'
@@ -40,13 +40,12 @@ function processTranscript({ messages, botId, convId }) {
     convId,
     messages
   }
-  console.log(transcript)
+  console.log(JSON.stringify(transcript, null, 2))
 }
 
 // This function retrieves a secret from AWS Secrets Manager using an env variable as a key.
 // This is not part of the e-bot7 Application Platform, it is just a basic implementation of a secure mechanism for storing keys.
 async function getSecretFromSecretsManager(secretId) {
-  console.log('oh boy', secretId)
   const sm = new SecretsManagerClient({
     region: 'eu-central-1'
   })
@@ -54,6 +53,5 @@ async function getSecretFromSecretsManager(secretId) {
     SecretId: secretId
   })
   const response = await sm.send(command)
-  console.log(response)
-  return response
+  return JSON.parse(response.SecretString)
 }
