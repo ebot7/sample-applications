@@ -23,3 +23,9 @@ functions:
         - http:
             method: post
             path: events
+  redirectEndpoint:
+    handler: handler.redirectEndpoint
+    events:
+        - http:
+            method: get
+            path: redirect
