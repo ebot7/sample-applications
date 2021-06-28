@@ -8,7 +8,7 @@ export async function getClient() {
   const { ACCESS_TOKEN: bearerToken } = await getSecretFromSecretsManager(process.env.token)
 	const client = new Ebot7Client({
 		bearerToken,
-		baseURL: process.env.baseUrl,
+		baseURL: process.env.apiBaseUrl,
 	});
 	return {
 		convs: new Ebot7ConversationClient(client),
