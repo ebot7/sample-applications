@@ -16,7 +16,7 @@ interface Response {
  * If the event is of type "message:created", it'll check if it's 
  * from either the agent or the bot.
  * If it is, it will extract the facebookAccessToken from DDB and 
- * send a message on facebook incorporating the account specified by the
+ * send a message on facebook incorporating the page specified by the
  * facebookAccessToken
  * @param event 
  * @param context 
