@@ -46,3 +46,6 @@ functions:
           path: send-outbound
     environment:
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
+      secretAccessKey: TODO # Replace with SecretAccessKey
+      accessKeyId: TODO # Replace with accessKeyId
+      awsDynamoTable: facebookAuth

@@ -11,6 +11,13 @@ interface Response {
   body?: string;
 }
 
+/**
+ * This endpoint handles all messages created events sent
+ * by the ebot7 backend and sends a message to the related facebook conversation
+ * @param event 
+ * @param context 
+ * @returns 
+ */
 export const eventsEndpoint: Handler = async (
   event: APIGatewayEvent,
   context: Context
