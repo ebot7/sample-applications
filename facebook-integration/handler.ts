@@ -3,7 +3,6 @@ import { Ebot7ConvWrapper } from "./helpers/ebot7-conv-wrapper";
 import { sendMessage } from "./helpers/facebook-send";
 import environment from "./environment";
 import { validateEvent } from "./helpers/validate-event";
-import { promises as fsPromises } from "fs";
 
 interface Response {
   statusCode: number;
@@ -16,6 +15,8 @@ export const eventsEndpoint: Handler = async (
   context: Context
 ): Promise<Response> => {
   const ebot7Event = JSON.parse(event.body);
+  console.log(ebot7Event);
+  
   const message = ebot7Event.data.body;
 
   const invalid = validateEvent(event);
@@ -28,8 +29,11 @@ export const eventsEndpoint: Handler = async (
       convId,
       botId
     );
-    await sendMessage("TODO-oauth-fb-token", fbRecipientId, message);
+    const cleanMessage = message.replace(/<\/?[^>]+(>|$)/g, ""); // remove html tags
+    await sendMessage(environment.pageAccessToken, fbRecipientId, cleanMessage);
+    console.log('Sent message');
   } catch (e) {
+    console.error(e);
     return { statusCode: 500, body: e.message };
   }
 
