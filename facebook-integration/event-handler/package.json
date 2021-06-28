@@ -1,17 +1,16 @@
 {
-  "name": "facebook-integration",
+  "name": "example-application",
   "version": "1.0.0",
-  "description": "Quick intro to facebook authentication workflow for ebot7 Application Platform with follow-along example.",
+  "description": "Example application for the e-bot7 app platform",
   "main": "handler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "serverless deploy",
-    "offline": "serverless offline",
-    "remove": "serverless remove -v"
+    "offline": "serverless offline"
   },
   "devDependencies": {
     "@types/aws-lambda": "0.0.22",
-    "@types/node": "^15.12.4",
+    "@types/node": "^8.0.57",
     "serverless": "^2.25.1",
     "serverless-offline": "^7.0.0",
     "serverless-plugin-typescript": "^1.1.9",
@@ -20,7 +19,7 @@
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT",
   "dependencies": {
-    "@ebot7/sdk": "^0.1.0",
-    "axios": "^0.21.1"
+    "@aws-sdk/client-secrets-manager": "^3.19.0",
+    "@ebot7/sdk": "^0.1.0"
   }
 }

@@ -1,8 +1,9 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 import { Ebot7ConvWrapper } from "./helpers/ebot7-conv-wrapper";
 import { sendMessage } from "./helpers/facebook-send";
-import environment from "./environment";
+import {initEnvironment} from "./environment";
 import { validateEvent } from "./helpers/validate-event";
+import { getItem } from "./helpers/dynamoClient";
 
 interface Response {
   statusCode: number;
@@ -14,6 +15,8 @@ export const eventsEndpoint: Handler = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<Response> => {
+  const environment = await initEnvironment();
+  
   const ebot7Event = JSON.parse(event.body);
   console.log(ebot7Event);
   
@@ -30,7 +33,10 @@ export const eventsEndpoint: Handler = async (
       botId
     );
     const cleanMessage = message.replace(/<\/?[^>]+(>|$)/g, ""); // remove html tags
-    await sendMessage(environment.pageAccessToken, fbRecipientId, cleanMessage);
+    const dynamoItem = await getItem(botId);
+    console.log('Dynamo Item: ', dynamoItem);
+    
+    await sendMessage((dynamoItem as any).pageAccessToken, fbRecipientId, cleanMessage);
     console.log('Sent message');
   } catch (e) {
     console.error(e);
@@ -38,19 +44,4 @@ export const eventsEndpoint: Handler = async (
   }
 
   return { statusCode: 200 };
-};
-
-export const redirectEndpoint: Handler = async (
-  event: APIGatewayEvent,
-  context: Context
-): Promise<Response> => {
-  const response = {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/html',
-    },
-    body: 'TODO',
-  };
-  // callback will send HTML back
-  return response
 };
