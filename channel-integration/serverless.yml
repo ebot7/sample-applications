@@ -14,6 +14,14 @@ provider:
     shouldStartNameWithService: true
   stage: ${opt:stage, 'dev'}
   profile: ${opt:profile, 'prod'}
+  # This sample application is using AWS Secrets Manager to store its access token.
+  # You can use the secure storage mechanism of your choice.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
 functions:
   # This function is invoked by the external platform.
   # It causes a message to be sent to e-bot7
@@ -23,6 +31,8 @@ functions:
       - http:
           method: post
           path: receive-inbound
+    environment:
+      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
   # This function is invoked by Application Platform.
   # It causes a message to be sent to the external platform.
   sendOutboundMessage:
@@ -31,3 +41,5 @@ functions:
       - http:
           method: post
           path: send-outbound
+    environment:
+      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS

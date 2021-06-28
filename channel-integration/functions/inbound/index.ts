@@ -11,19 +11,31 @@ import { getClient } from "../utils/getClient"
  * @param callback 
  */
 export async function handler (event, context, callback) {
-	const payload: IFacebookEvent = event.body
-	const messageData = parseWebhookPayload(payload)
-	const mappingData = getConversationMappingData(messageData)
-	const conv = await findOrCreateConversation(mappingData)
-	await sendMessagesToConv(messageData, conv)
-	// Parse webhook event
-	// Create/Fetch e-bot7 conversation
-	// Create
-	console.log("Got event", JSON.stringify(payload, null, 2))
-	callback(null, {
-		statusCode: 200,
-		body: "Message received"
-	})
+	try {
+		const payload: IFacebookEvent = event.body
+		console.log("Got event", JSON.stringify(payload, null, 2))
+		// Parse webhook event
+		const messageData = parseWebhookPayload(payload)
+	
+		// Create/Fetch e-bot7 conversation
+		const mappingData = getConversationMappingData(messageData)
+		const conv = await findOrCreateConversation(mappingData)
+	
+		// Send messages to conv
+		await sendMessagesToConv(messageData, conv)
+	
+		callback(null, {
+			statusCode: 200,
+			body: "Message received"
+		})
+	} catch (err) {
+		console.error("Failed to receive message", JSON.stringify(err, null, 2))
+		// Return a 200 status code because Facebook will stop sending failing webhooks events.
+		callback(null, {
+			statusCode: 200,
+			body: "Failed to receive message"
+		})
+	}
 }
 
 /**
@@ -48,7 +60,7 @@ function parseWebhookPayload(payload: IFacebookEvent) {
  * @return information that can be used to map between an e-bot7 conversation and a Facebook conversation. Assumes that every message in the event has the same sender and recipient 
  */
 function getConversationMappingData(messageData) {
-	return messageData.map(({ senderId, pageId, body }) => ({
+	return messageData.map(({ senderId, pageId }) => ({
 		externalData: [{
 			// Conversations can be uniquely identified by the id of the message sender and the id of the page they are messaging
 			id: `${senderId}-${pageId}`,
@@ -58,22 +70,25 @@ function getConversationMappingData(messageData) {
 }
 
 async function findOrCreateConversation(mappingData) {
-	let client = getClient("external-convs")
-	let conv = await client.findOne(mappingData.externalData[0].id)
+	let client = await getClient()
+	let conv = await client.externalConvs.findOne(mappingData.externalData[0].id)
 	if (!conv.item) {
-		client = getClient("convs")
-		conv = await client.create(mappingData)
+		conv = await client.convs.create(mappingData)
 	}
 	return conv 
 }
 
 async function sendMessagesToConv(messages, conv) {
-	let client = getClient("messages")
+	let client = await getClient()
 	for(const message of messages) {
 		const { body, source } = message
-		await client.create({
-			body: transformBody(body),
-			source
+		await client.messages.create({
+			botId: conv.botId,
+			convId: conv._id,
+			payload: {
+				body: transformBody(body),
+				source
+			}
 		})
 	}
 }
