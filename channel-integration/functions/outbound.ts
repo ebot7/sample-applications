@@ -12,8 +12,12 @@ interface Response {
 }
 
 /**
- * This endpoint handles all messages created events sent
- * by the ebot7 backend and sends a message to the related facebook conversation
+ * This endpoint handles events sent from ebot7 backend.
+ * If the event is of type "message:created", it'll check if it's 
+ * from either the agent or the bot.
+ * If it is, it will extract the facebookAccessToken from DDB and 
+ * send a message on facebook incorporating the account specified by the
+ * facebookAccessToken
  * @param event 
  * @param context 
  * @returns 
