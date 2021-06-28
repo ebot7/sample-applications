@@ -7,38 +7,23 @@ import FacebookLogin from "react-facebook-login-typed";
 import axios from "axios";
 import { useQueryParam, StringParam } from "use-query-params";
 
-import { putData } from "./helpers/dynamoClient";
-import { installApplication } from "./helpers/ebot7Client";
-
 const SEND_API = `https://graph.facebook.com/$PAGE_ID?fields=access_token&access_token=$ACCESS_TOKEN`;
 
 export default function App() {
   const config = useConfig();
-  const [accessToken] = useQueryParam("accessToken", StringParam);
+  const [installationAccessToken] = useQueryParam("accessToken", StringParam);
   const [botId] = useQueryParam("botId", StringParam);
 
   const responseFacebook = async (res: any) => {
     const { accessToken: userAccessToken } = res;
-    console.log('Facebook response ', res);
-    const pageId = 'TODO';
+    console.log('Facebook response', res);
+    const pageId = config.fbPageId;
     const { access_token: pageAccessToken } = (
       await axios.get(SEND_API.replace("$ACCESS_TOKEN", userAccessToken).replace("$PAGE_ID", pageId))
     ).data;
 
-    console.log(`userToken: ${userAccessToken}, pageToken: ${pageAccessToken}`);
+    await axios.post(config.application_install_url, {installationAccessToken, botId, pageId, pageAccessToken });
 
-    const pageData = {
-      botId,
-      pageId,
-      pageAccessToken,
-    };
-
-    await putData(config.awsTable, pageData);
-
-    await installApplication(
-      config.appKey,
-      accessToken || "missing-access-token",
-    );
     console.log("Successfully installed");
   };
 

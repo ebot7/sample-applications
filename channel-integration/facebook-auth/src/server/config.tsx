@@ -30,15 +30,9 @@ const config = {
     /** Where the contents of the `public` folder are hosted (might be the same as `config.app.DIST_URL`) */
     PUBLIC_URL: isLocal ? "http://localhost:8080" : String(process.env.APP_PUBLIC_URL),
   },
-  fbAppId: '405351266499478',
-  awsTable: "facebookAuth",
-  awsConfiguration: {
-    region: "eu-central-1",
-    secretAccessKey: "2e5BnEN/Y50F3GjQEbXhGmr4qKbSvBp+vOTVSSR3",
-    accessKeyId: "AKIAQ4KIGWM3GO5VYS7S",
-  },
-  appKey: 'xapp-60d1b2cbddf51f23bffd930d-34c596be761e99592e8d982a6764ed9355782bcc',
-
+  fbAppId: process.env.fbAppId || 'missing',
+  fbPageId: process.env.fbPageId || 'missing',
+  application_install_url: process.env.application_install_url || 'missing'
 };
 
 export type Config = typeof config;
