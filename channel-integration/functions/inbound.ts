@@ -1,5 +1,5 @@
-import { IFacebookEvent } from "../../interfaces"
-import { getClient } from "../utils/getClient"
+import { IFacebookEvent } from "../interfaces"
+import { getClient } from "./utils/getClient"
 
 /**
  * This function receives webhook events from Facebook.
@@ -12,8 +12,8 @@ import { getClient } from "../utils/getClient"
  */
 export async function handler (event, context, callback) {
 	try {
-		const payload: IFacebookEvent = event.body
-		console.log("Got event", JSON.stringify(payload, null, 2))
+		const payload: IFacebookEvent = JSON.parse(event.body)
+		console.log("Got event", event)
 		// Parse webhook event
 		const messageData = parseWebhookPayload(payload)
 	
@@ -29,7 +29,7 @@ export async function handler (event, context, callback) {
 			body: "Message received"
 		})
 	} catch (err) {
-		console.error("Failed to receive message", JSON.stringify(err, null, 2))
+		console.error("Failed to receive message", err)
 		// Return a 200 status code because Facebook will stop sending failing webhooks events.
 		callback(null, {
 			statusCode: 200,
@@ -45,6 +45,7 @@ export async function handler (event, context, callback) {
  * @returns data required to map between Facebook conversations and e-bot7 conversations and the contents of the messages
  */
 function parseWebhookPayload(payload: IFacebookEvent) {
+	console.log('parsing the payload', payload)
 	return payload.entry.reduce((acc, entry) => {
 		return acc.concat(entry.messaging.map(message => ({
 			senderId: message.sender.id,
@@ -70,21 +71,28 @@ function getConversationMappingData(messageData) {
 }
 
 async function findOrCreateConversation(mappingData) {
+	console.log('Trying to find conversation', JSON.stringify(mappingData, null, 2))
 	let client = await getClient()
-	let conv = await client.externalConvs.findOne(mappingData.externalData[0].id)
+	const botId = "60d1b2e16d08eeed5ead2486"
+	const integrations = mappingData[0].externalData
+	let conv = await client.externalConvs.findOne({ botId, externalId: mappingData[0].externalData[0].id })
 	if (!conv.item) {
-		conv = await client.convs.create(mappingData)
+		conv = await client.convs.create({ botId, payload: {
+			integrations
+		} })
 	}
 	return conv 
 }
 
 async function sendMessagesToConv(messages, conv) {
+	console.log('Sending a message', messages, conv)
+	const botId = "60d1b2e16d08eeed5ead2486"
 	let client = await getClient()
 	for(const message of messages) {
 		const { body, source } = message
 		await client.messages.create({
-			botId: conv.botId,
-			convId: conv._id,
+			botId,
+			convId: conv.item.id,
 			payload: {
 				body: transformBody(body),
 				source
