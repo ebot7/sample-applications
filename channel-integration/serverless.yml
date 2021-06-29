@@ -23,6 +23,7 @@ provider:
       Action:
         - secretsmanager:GetSecretValue
       Resource:
+        # Replace the AWS Account ID shown here with your own.
         - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
 functions:
   # This function is invoked by the external platform.
