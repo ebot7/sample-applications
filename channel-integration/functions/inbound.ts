@@ -74,12 +74,12 @@ async function findOrCreateConversation(mappingData) {
 	console.log('Trying to find conversation', JSON.stringify(mappingData, null, 2))
 	let client = await getClient()
 	const botId = "60d1b2e16d08eeed5ead2486"
-	const integrations = mappingData[0].externalData
 	let conv = await client.externalConvs.findOne({ botId, externalId: mappingData[0].externalData[0].id })
-	if (!conv.item) {
-		conv = await client.convs.create({ botId, payload: {
-			integrations
-		} })
+	if (!conv.items.length) {
+		conv = await client.externalConvs.create({ botId, payload: mappingData[0] })
+		conv
+	} else {
+		conv = { item: conv.items[0] }
 	}
 	return conv 
 }
