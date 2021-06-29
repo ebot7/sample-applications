@@ -9,6 +9,8 @@ provider:
   # These examples use Serverless, Node, and AWS Lambdas
   name: aws
   runtime: nodejs12.x
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   lambdaHashingVersion: "20201221"
   apiGateway:
     shouldStartNameWithService: true
@@ -24,6 +26,15 @@ provider:
         - secretsmanager:GetSecretValue
       Resource:
         - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 functions:
   # This function is invoked by the external platform.
   # It causes a message to be sent to e-bot7
@@ -46,9 +57,7 @@ functions:
           path: send-outbound
     environment:
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
-      secretAccessKey: TODO # Replace with SecretAccessKey
-      accessKeyId: TODO # Replace with accessKeyId
-      awsDynamoTable: facebookAuth
+      awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
 
   applicationInstall:
     handler: functions/applicationInstall.handler
@@ -59,3 +68,19 @@ functions:
     environment: 
       ebot7_install_url: https://api.staging.e-bot7.de
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
+
+resources:
+  Resources: 
+    tokenStore:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: pageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

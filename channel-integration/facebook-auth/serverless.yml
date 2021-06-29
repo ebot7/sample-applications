@@ -145,20 +145,6 @@ resources:
                       - Ref: AWS::Region
                       - .amazonaws.com
               MaxAge: 3000
-              
-    facebookSampleAuth:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: facebookAuth
-        AttributeDefinitions:
-          - AttributeName: pageId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: pageId
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
 
   Outputs:
     ApiGatewayRestApi:
