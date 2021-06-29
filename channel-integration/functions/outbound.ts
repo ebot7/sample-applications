@@ -1,7 +1,7 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 import { sendMessage } from "./helpers/facebook-send";
 import { validateEvent } from "./helpers/validate-event";
-import { getItem } from "./helpers/dynamoClient";
+import { getItemByBotId } from "./helpers/dynamoClient";
 import {IResponse} from '../interfaces';
 import { getConversationExternalSenderId } from "./helpers/get-conversation-external-sender-id";
 
@@ -36,7 +36,7 @@ export const eventsEndpoint: Handler = async (
       botId
     );
     const cleanMessage = message.replace(/<\/?[^>]+(>|$)/g, ""); // remove html tags
-    const dynamoItem = await getItem(botId);
+    const dynamoItem = await getItemByBotId(botId);
     console.log('Dynamo Item: ', dynamoItem);
     
     await sendMessage((dynamoItem as any).pageAccessToken, fbRecipientId, cleanMessage);

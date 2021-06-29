@@ -1,4 +1,5 @@
 import { IFacebookEvent } from "../interfaces"
+import { getItemByPageId } from "./helpers/dynamoClient"
 import { getClient } from "./helpers/getClient"
 
 /**
@@ -104,4 +105,13 @@ async function sendMessagesToConv(messages, conv) {
 function transformBody(body) {
 	// Unimplemented function that would transform Facebook markdown to HTML.
 	return body
+}
+
+/**
+ * 
+ * @param pageId the ID of the Facebook page that generated the event
+ * @returns The ID of the e-bot7 bot associated with the Facebook page.
+ */
+async function getBot(pageId) {
+	return await getItemByPageId(pageId)
 }

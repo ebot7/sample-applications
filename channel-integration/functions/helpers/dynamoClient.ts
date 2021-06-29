@@ -3,7 +3,7 @@ import { initEnvironment } from "../environment";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-export const getItem = async (botId: string) => {
+export const getItemByBotId = async (botId: string) => {
   const environment = await initEnvironment();
 
   return new Promise((resolve, reject) => {
@@ -24,6 +24,28 @@ export const getItem = async (botId: string) => {
     });
   });
 };
+
+export const getItemByPageId = async (pageId: string) => {
+  const environment = await initEnvironment();
+
+  return new Promise((resolve, reject) => {
+    const params = {
+      TableName: environment.awsDynamoTable,
+      FilterExpression: "pageId = :pageId",
+      ExpressionAttributeValues: {
+        ":pageId": { S: pageId },
+      },
+    };
+
+    docClient.scan(params, (err, data) => {
+      if (err) console.error("Error on dbScan ", err);
+      else {
+        console.log("dbScan result: ", data);
+        resolve(data.Items[0]);
+      }
+    });
+  });
+}
 
 export const putItem = async (botId: string, pageId: string, pageAccessToken: string) => {
   const environment = await initEnvironment();
