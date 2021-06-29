@@ -1,6 +1,6 @@
 import "./App.css";
 
-import React from "react";
+import React, { useState } from "react";
 
 import useConfig from "../components/useConfig";
 import FacebookLogin from "react-facebook-login-typed";
@@ -13,6 +13,7 @@ export default function App() {
   const config = useConfig();
   const [installationAccessToken] = useQueryParam("accessToken", StringParam);
   const [botId] = useQueryParam("botId", StringParam);
+  const [finished, setFinished] = useState(false);
 
   const responseFacebook = async (res: any) => {
     const { accessToken: userAccessToken } = res;
@@ -22,19 +23,21 @@ export default function App() {
       await axios.get(SEND_API.replace("$ACCESS_TOKEN", userAccessToken).replace("$PAGE_ID", pageId))
     ).data;
 
-    await axios.post(config.application_install_url, { installationAccessToken, botId, pageId, pageAccessToken });
+    const ebot7Res = await axios.post(config.application_install_url, { installationAccessToken, botId, pageId, pageAccessToken });
+    console.log('From Ebot7: ', ebot7Res);
 
-    console.log("Successfully installed");
+    setFinished(true);
   };
 
   return (
     <div style={{ padding: "48px" }}>
-      <FacebookLogin
+      {!finished && <FacebookLogin
         appId={config.fbAppId}
         returnScopes
         scope="public_profile,pages_show_list,pages_messaging,pages_read_engagement"
         callback={responseFacebook}
-      />
+      />}
+      {finished && <div>Finished. Feel free to close this window.</div>}
     </div>
   );
 }
