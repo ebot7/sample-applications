@@ -68,7 +68,6 @@ functions:
     environment:
       fbAppId: '405351266499478'
       application_install_url: 'TODO'
-      fbPageId: 'TODO'
 
 custom:
   distBucketUrl:

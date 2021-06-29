@@ -31,7 +31,6 @@ const config = {
     PUBLIC_URL: isLocal ? "http://localhost:8080" : String(process.env.APP_PUBLIC_URL),
   },
   fbAppId: process.env.fbAppId || 'missing',
-  fbPageId: process.env.fbPageId || 'missing',
   application_install_url: process.env.application_install_url || 'missing'
 };
 
