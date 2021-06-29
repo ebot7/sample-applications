@@ -1,15 +1,9 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import { Ebot7ConvWrapper } from "./helpers/ebot7-conv-wrapper";
 import { sendMessage } from "./helpers/facebook-send";
-import {initEnvironment} from "./environment";
 import { validateEvent } from "./helpers/validate-event";
 import { getItem } from "./helpers/dynamoClient";
-
-interface Response {
-  statusCode: number;
-  headers?: any;
-  body?: string;
-}
+import {IResponse} from '../interfaces';
+import { getConversationExternalSenderId } from "./helpers/get-conversation-external-sender-id";
 
 /**
  * This endpoint handles events sent from ebot7 backend.
@@ -25,8 +19,7 @@ interface Response {
 export const eventsEndpoint: Handler = async (
   event: APIGatewayEvent,
   context: Context
-): Promise<Response> => {
-  const environment = await initEnvironment();
+): Promise<IResponse> => {
   
   const ebot7Event = JSON.parse(event.body);
   console.log(ebot7Event);
@@ -37,9 +30,8 @@ export const eventsEndpoint: Handler = async (
   if (invalid) return invalid;
 
   try {
-    const convWrapper = new Ebot7ConvWrapper(environment.appKey);
     const { botId, convId } = ebot7Event.data;
-    const fbRecipientId = await convWrapper.getConversationFbRecipientId(
+    const fbRecipientId = await getConversationExternalSenderId(
       convId,
       botId
     );

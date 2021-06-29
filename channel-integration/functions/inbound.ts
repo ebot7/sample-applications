@@ -1,5 +1,5 @@
 import { IFacebookEvent } from "../interfaces"
-import { getClient } from "./utils/getClient"
+import { getClient } from "./helpers/getClient"
 
 /**
  * This function receives webhook events from Facebook.

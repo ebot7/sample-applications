@@ -1,4 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
+import { IResponse } from "../interfaces";
 import { initEnvironment } from "./environment";
 import { putItem } from "./helpers/dynamoClient";
 import { installApplication } from "./helpers/ebot7-application-install";
@@ -14,7 +15,7 @@ import { installApplication } from "./helpers/ebot7-application-install";
 export const applicationInstall: Handler = async (
   event: APIGatewayEvent,
   context: Context
-) => {
+): Promise<IResponse> => {
     const environment = await initEnvironment();
 
     const {installationAccessToken, botId, pageId, pageAccessToken} = JSON.parse(event.body);
@@ -22,4 +23,5 @@ export const applicationInstall: Handler = async (
 
     await putItem(botId, pageId, pageAccessToken);
     await installApplication(appKey, installationAccessToken);
+    return {statusCode: 200, body: 'Successfully installed'};
 };
