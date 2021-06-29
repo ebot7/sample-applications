@@ -1,0 +1,67 @@
+service: ebot7-sample-oauth-handler
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  # e-bot7 Applications work with any framework and cloud provider
+  # These examples use Serverless, Node, and AWS Lambdas
+  name: aws
+  runtime: nodejs12.x
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}-OauthTable
+  lambdaHashingVersion: "20201221"
+  apiGateway:
+    shouldStartNameWithService: true
+  stage: ${opt:stage, 'dev'}
+  profile: ${opt:profile, 'prod'}
+  region: eu-central-1
+  endpointType: REGIONAL
+  # This sample application is using AWS Secrets Manager to store its access token.
+  # You can use the secure storage mechanism of your choice.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        # Replace the AWS Account ID shown here with your own.
+        - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+functions:
+  # This function receives a OAuth access code, exchanges it for an access token, and stores some information in DynamoDB.
+  # These credentials are used in the channel integration example in this repo.
+  handleAccessCode:
+    handler: functions/oauth.handler
+    events:
+      - http:
+          method: get
+          path: ebot7-sample-oauth
+    environment:
+      secretsManagerPath: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
+      awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
+      ebot7_install_url: https://api.staging.e-bot7.de
+
+resources:
+  Resources: 
+    tokenStore:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: pageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

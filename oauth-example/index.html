@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>e-bot7 OAuth Example</title>
+	</head>
+	<body>
+		<!-- This is a simple HTML page that demonstrates the e-bot7 Application Platform OAuth flow.
+		This form asks the app installer for some information and passes it to an OAuth URL. -->
+		<input
+			id="pageId"
+			placeholder="Insert Facebook page ID"
+		>
+		<button onclick="redirectToFacebookOAuth()">Connect to Facebook</button>
+		</form>
+	</body>
+	<script>
+		function redirectToFacebookOAuth(event) {
+			try {
+				// Get the form values
+				const pageId = document.getElementById('pageId').value
+				if (!pageId) {
+					alert("Please enter a page ID")
+					return false
+				}
+				// e-bot7 sends the bot ID, org ID, and an installation token as query parameters
+				const queryParams = getQueryStringAsObject()
+	
+				// Use the OAuth state parameter to encode information that Facebook's OAuth page needs to pass to our backend later.
+				const state = getStateParam({ ...queryParams, pageId })
+	
+				// Page should redirect to Facebook to get an access code
+				const oauthBaseUrl = 'https://www.facebook.com/v11.0/dialog/oauth'
+				// Example Facebook App ID. Replace with your own.
+				const client_id = "405351266499478"
+				// URL that Facebook's OAuth page will redirect to.
+				const redirect_uri = encodeURIComponent("https://n4oyvwukuc.execute-api.eu-central-1.amazonaws.com/dev/ebot7-sample-oauth")
+				// Required permissions
+				const scope = "public_profile,pages_show_list,pages_messaging,pages_read_engagement"
+				window.location.href = `${oauthBaseUrl}?client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}&scope=${scope}`
+			} catch (err) {
+				console.error('Failure while trying to redirect to Facebook OAuth page', err)
+			}
+			return false
+		}
+
+		function getQueryStringAsObject() {
+			const search = location.search.substring(1);
+			return JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
+		}
+
+		function getStateParam(queryObject) {
+			return encodeURIComponent(JSON.stringify(queryObject))
+		}
+	</script>
+</html>
