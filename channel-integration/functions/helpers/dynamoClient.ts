@@ -1,11 +1,10 @@
 import * as AWS from "aws-sdk";
 import { initEnvironment } from "../environment";
 
+const docClient = new AWS.DynamoDB.DocumentClient();
+
 export const getItem = async (botId: string) => {
   const environment = await initEnvironment();
-
-  AWS.config.update({ ...environment.awsConfiguration });
-  const docClient = new AWS.DynamoDB.DocumentClient();
 
   return new Promise((resolve, reject) => {
     const params = {
@@ -29,10 +28,6 @@ export const getItem = async (botId: string) => {
 export const putItem = async (botId: string, pageId: string, pageAccessToken: string) => {
   const environment = await initEnvironment();
 
-  AWS.config.update({ ...environment.awsConfiguration });
-
-  const docClient = new AWS.DynamoDB.DocumentClient();
-  
   return new Promise((resolve, reject) => {
     const params = {
       TableName: environment.awsDynamoTable,

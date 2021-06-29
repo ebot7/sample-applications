@@ -5,11 +5,6 @@ export const initEnvironment = async () => {
 
     return {
         appKey,
-        awsConfiguration: {
-            region: "eu-central-1",
-            secretAccessKey: process.env.secretAccessKey,
-            accessKeyId: process.env.accessKeyId,
-        },
         awsDynamoTable: process.env.awsDynamoTable
     }
 }
