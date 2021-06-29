@@ -8,6 +8,7 @@
     "typescript": "^4.3.4"
   },
   "scripts": {
-    "offline": "serverless offline"
+    "offline": "serverless offline",
+    "deploy": "serverless deploy"
   }
 }
