@@ -16,7 +16,7 @@ import { getConversationExternalSenderId } from "./helpers/get-conversation-exte
  * @param context 
  * @returns 
  */
-export const eventsEndpoint: Handler = async (
+export const handler: Handler = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<IResponse> => {
@@ -46,5 +46,5 @@ export const eventsEndpoint: Handler = async (
     return { statusCode: 500, body: e.message };
   }
 
-  return { statusCode: 200 };
+  return { statusCode: 200, body: 'Successfully forwarded message to Facebook' };
 };

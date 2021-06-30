@@ -14,8 +14,8 @@ export const validateEvent = (event: APIGatewayEvent) => {
     }
     if (source === "visitor") {
       return {
-        statusCode: 404,
-        body: `Invalid source received: ${source}. This endpoint forwards facebook messages only when bot or agent send a message`,
+        statusCode: 200,
+        body: `Ignoring message from ${source}. This endpoint forwards facebook messages only when bot or agent send a message`,
       };
     }
   }
