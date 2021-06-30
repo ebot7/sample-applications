@@ -14,16 +14,15 @@ import { getClient } from "./helpers/getClient"
 export async function handler (event, context, callback) {
 	try {
 		const payload: IFacebookEvent = JSON.parse(event.body)
-		console.log("Got event", event)
-		// Parse webhook event
 		const messageData = parseWebhookPayload(payload)
+		const botId = await getBot(messageData)
 	
 		// Create/Fetch e-bot7 conversation
 		const mappingData = getConversationMappingData(messageData)
-		const conv = await findOrCreateConversation(mappingData)
+		const conv = await findOrCreateConversation(mappingData, botId)
 	
 		// Send messages to conv
-		await sendMessagesToConv(messageData, conv)
+		await sendMessagesToConv(messageData, conv, botId)
 	
 		callback(null, {
 			statusCode: 200,
@@ -71,10 +70,9 @@ function getConversationMappingData(messageData) {
 	}))
 }
 
-async function findOrCreateConversation(mappingData) {
+async function findOrCreateConversation(mappingData, botId) {
 	console.log('Trying to find conversation', JSON.stringify(mappingData, null, 2))
 	let client = await getClient()
-	const botId = "60d1b2e16d08eeed5ead2486"
 	let conv = await client.externalConvs.findOne({ botId, externalId: mappingData[0].externalData[0].id })
 	if (!conv.items.length) {
 		conv = await client.externalConvs.create({ botId, payload: mappingData[0] })
@@ -85,9 +83,8 @@ async function findOrCreateConversation(mappingData) {
 	return conv 
 }
 
-async function sendMessagesToConv(messages, conv) {
+async function sendMessagesToConv(messages, conv, botId) {
 	console.log('Sending a message', messages, conv)
-	const botId = "60d1b2e16d08eeed5ead2486"
 	let client = await getClient()
 	for(const message of messages) {
 		const { body, source } = message
@@ -109,9 +106,11 @@ function transformBody(body) {
 
 /**
  * 
- * @param pageId the ID of the Facebook page that generated the event
+ * @param messageData A flattened version of the Facebook message event
  * @returns The ID of the e-bot7 bot associated with the Facebook page.
  */
-async function getBot(pageId) {
-	return await getItemByPageId(pageId)
+async function getBot(messageData) {
+	const [{pageId}] = messageData
+	const botItem = await getItemByPageId(pageId)
+	return botItem.botId
 }

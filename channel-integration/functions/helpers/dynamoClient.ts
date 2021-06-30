@@ -11,12 +11,15 @@ export const getItemByBotId = async (botId: string) => {
       TableName: environment.awsDynamoTable,
       FilterExpression: "botId = :botId",
       ExpressionAttributeValues: {
-        ":botId": { S: botId },
+        ":botId": botId,
       },
     };
 
     docClient.scan(params, (err, data) => {
-      if (err) console.error("Error on dbScan ", err);
+      if (err) {
+        console.error("Error on dbScan ", err);
+        reject(err)
+      }
       else {
         console.log("dbScan result: ", data);
         resolve(data.Items[0]);
@@ -27,18 +30,22 @@ export const getItemByBotId = async (botId: string) => {
 
 export const getItemByPageId = async (pageId: string) => {
   const environment = await initEnvironment();
+  console.log('getting by pageId', pageId, typeof pageId, environment.awsDynamoTable)
 
   return new Promise((resolve, reject) => {
     const params = {
       TableName: environment.awsDynamoTable,
       FilterExpression: "pageId = :pageId",
       ExpressionAttributeValues: {
-        ":pageId": { S: pageId },
+        ":pageId": pageId,
       },
     };
 
     docClient.scan(params, (err, data) => {
-      if (err) console.error("Error on dbScan ", err);
+      if (err) {
+        console.error("Error on dbScan ", err);
+        reject(err)
+      }
       else {
         console.log("dbScan result: ", data);
         resolve(data.Items[0]);
@@ -59,8 +66,10 @@ export const putItem = async (botId: string, pageId: string, pageAccessToken: st
     docClient.put(params, function (err, data) {
       if (err) {
         console.log("Error when inserting into DDB", err);
+        reject(err)
       } else {
         console.log("Successfully inserted into DDB", data);
+        resolve(data)
       }
     });
   });
