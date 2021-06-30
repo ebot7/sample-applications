@@ -1,0 +1,64 @@
+service: ebot7-sample-channel-integration
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  # e-bot7 Applications work with any framework and cloud provider
+  # These examples use Serverless, Node, and AWS Lambdas
+  name: aws
+  runtime: nodejs12.x
+  environment:
+    # This table is provisioned and populated by the OAuth Example stack
+    DYNAMODB_TABLE: ebot7-sample-applications-${opt:stage, self:provider.stage}-MappingTable
+  lambdaHashingVersion: "20201221"
+  apiGateway:
+    shouldStartNameWithService: true
+  stage: ${opt:stage, 'dev'}
+  profile: ${opt:profile, 'prod'}
+  region: eu-central-1
+  endpointType: REGIONAL
+  # This sample application is using AWS Secrets Manager to store its access token.
+  # You can use the secure storage mechanism of your choice.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        # Replace the AWS Account ID shown here with your own.
+        - arn:aws:secretsmanager:eu-central-1:060817847094:secret:${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS-*
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+functions:
+  # This function is invoked by the external platform.
+  # It causes a message to be sent to e-bot7
+  receiveInboundMessage:
+    handler: functions/inbound.handler
+    events:
+      - http:
+          method: post
+          path: receive-inbound
+    environment:
+      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
+      apiBaseUrl: "https://api.staging.e-bot7.de"
+      awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
+  # This function is invoked by Application Platform.
+  # It causes a message to be sent to the external platform.
+  sendOutboundMessage:
+    handler: functions/outbound.handler
+    events:
+      - http:
+          method: post
+          path: send-outbound
+    environment:
+      apiBaseUrl: "https://api.staging.e-bot7.de"
+      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
+      awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}

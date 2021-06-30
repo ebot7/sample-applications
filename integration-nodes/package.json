@@ -5,7 +5,8 @@
   "main": "handler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "offline": "serverless offline"
   },
   "devDependencies": {
     "@types/aws-lambda": "0.0.22",
