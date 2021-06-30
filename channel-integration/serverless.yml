@@ -62,13 +62,3 @@ functions:
       apiBaseUrl: "https://api.staging.e-bot7.de"
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
       awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
-
-  applicationInstall:
-    handler: functions/applicationInstall.handler
-    events:
-      - http:
-        method: post
-        path: application-install
-    environment: 
-      ebot7_install_url: https://api.staging.e-bot7.de
-      token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
