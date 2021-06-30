@@ -10,7 +10,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}-OauthTable
+    DYNAMODB_TABLE: ebot7-sample-applications-${opt:stage, self:provider.stage}-MappingTable
   lambdaHashingVersion: "20201221"
   apiGateway:
     shouldStartNameWithService: true

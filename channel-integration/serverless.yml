@@ -10,7 +10,8 @@ provider:
   name: aws
   runtime: nodejs12.x
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    # This table is provisioned and populated by the OAuth Example stack
+    DYNAMODB_TABLE: ebot7-sample-applications-${opt:stage, self:provider.stage}-MappingTable
   lambdaHashingVersion: "20201221"
   apiGateway:
     shouldStartNameWithService: true
@@ -48,6 +49,7 @@ functions:
     environment:
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
       apiBaseUrl: "https://api.staging.e-bot7.de"
+      awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
   # This function is invoked by Application Platform.
   # It causes a message to be sent to the external platform.
   sendOutboundMessage:
@@ -57,6 +59,7 @@ functions:
           method: post
           path: send-outbound
     environment:
+      apiBaseUrl: "https://api.staging.e-bot7.de"
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
       awsDynamoTable: ${self:provider.environment.DYNAMODB_TABLE}
 
@@ -69,19 +72,3 @@ functions:
     environment: 
       ebot7_install_url: https://api.staging.e-bot7.de
       token: ${self:provider.stage}/SAMPLE_APPLICATIONS/CREDENTIALS
-
-resources:
-  Resources: 
-    tokenStore:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-        AttributeDefinitions:
-          - AttributeName: pageId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: pageId
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
