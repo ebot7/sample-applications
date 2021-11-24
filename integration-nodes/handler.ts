@@ -17,12 +17,15 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
     version: '1.0.0',
     parameters: {
-      name: {
-        title: 'Name',
-        description: 'The name of the person to greet.',
-        type: 'string',
-        required: true,
+      type: 'object',
+      properties: {
+        name: {
+          title: 'Name',
+          description: 'The name of the person to greet.',
+          type: 'string',
+        },
       },
+      required: ['name'],
     },
     results: {
       greeting: {
@@ -46,18 +49,20 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
     version: '1.0.0',
     parameters: {
-      a: {
-        title: 'A',
-        description: 'The first number.',
-        type: 'number',
-        required: true,
+      type: 'object',
+      properties: {
+        a: {
+          title: 'A',
+          description: 'The first number.',
+          type: 'number',
+        },
+        b: {
+          title: 'B',
+          description: 'The second number.',
+          type: 'number',
+        },
       },
-      b: {
-        title: 'B',
-        description: 'The second number.',
-        type: 'number',
-        required: true,
-      },
+      required: ['a', 'b']
     },
     results: {
       sum: {
@@ -79,24 +84,25 @@ export const integrationNodesDefinition: Handler = (event: APIGatewayEvent, cont
     },
     version: '1.0.0',
     parameters: {
-      one: {
-        title: 'One',
-        description: 'The first parameter.',
-        type: 'string',
-        required: true,
+      type: 'object',
+      properties: {
+        one: {
+          title: 'One',
+          description: 'The first parameter.',
+          type: 'string',
+        },
+        two: {
+          title: 'Two',
+          description: 'The second parameter.',
+          type: 'string',
+        },
+        three: {
+          title: 'Three',
+          description: 'The third parameter.',
+          type: 'string',
+        },
       },
-      two: {
-        title: 'Two',
-        description: 'The second parameter.',
-        type: 'string',
-        required: true,
-      },
-      three: {
-        title: 'Three',
-        description: 'The third parameter.',
-        type: 'string',
-        required: true,
-      },
+      required: ['one', 'two', 'three']
     },
     results: {
       concat: {
